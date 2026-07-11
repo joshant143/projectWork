@@ -1,0 +1,121 @@
+<div class="page-container">
+  <!-- Banner Section -->
+  <div class="banner-section">
+    <img src="assets/banner.jpeg" alt="Banner" class="banner-image" />
+
+    <div class="banner-overlay">
+      We understand that the unexpected happens. Ease starts here - because Claims is our product!
+    </div>
+  </div>
+
+  <!-- Main Card -->
+  <mat-card class="main-card">
+    <div class="action-container">
+      <mat-card class="action-card" (click)="startNewClaim()">
+        <img src="assets/start_claim.png" alt="new claim" class="action-icon" />
+
+        <h2>Start a New Claim</h2>
+
+        <p>Ready to move forward? Begin your claim in just a few simple steps.</p>
+      </mat-card>
+
+      <mat-card class="action-card">
+        <img src="assets/upload_docs.png" alt="upload-document" class="action-icon" />
+
+        <h2>Upload Documents</h2>
+
+        <p>Need to add documents to an existing claim? Upload them here.</p>
+      </mat-card>
+    </div>
+
+    @if (showClaimForm()) {
+      <form [formGroup]="claimForm">
+        <mat-card class="claim-form-card">
+          <div class="claim-header">
+            <span>Tell Us About Your Claim</span>
+            <span class="required-text">* Required Field</span>
+          </div>
+
+          <div class="claim-body">
+            <div class="form-row">
+              <label>Your Company's Name</label>
+
+              <mat-form-field appearance="outline" class="compact-field">
+                <input matInput formControlName="companyName" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <label>Policy Number</label>
+
+              <mat-form-field appearance="fill">
+                <input matInput formControlName="policyNumber" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <label>Policy Country*</label>
+
+              <mat-form-field appearance="outline">
+                <mat-select formControlName="policyCountry">
+                  @for (country of countries; track country.countryCode) {
+                    <mat-option [value]="country.countryCode">
+                      {{ country.countryName }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <label>Policy Type*</label>
+
+              <mat-form-field appearance="fill">
+                <mat-select formControlName="policyType">
+                  @for (policy of policyTypes; track policy.policyTypeCode) {
+                    <mat-option [value]="policy.policyTypeCode">
+                      {{ policy.policyTypeName }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <label>Claim Type*</label>
+
+              <mat-form-field appearance="fill">
+                <mat-select formControlName="claimType" multiple>
+                  @for (claim of claimTypes; track claim.claimTypeCode) {
+                    <mat-option [value]="claim.claimTypeCode">
+                      {{ claim.claimTypeName }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            @if (showOtherClaimType()) {
+              <div class="form-row">
+                <label>Specify 'Others' Claim Type</label>
+
+                <mat-form-field appearance="outline">
+                  <!-- <mat-label>Specify 'Others' Claim Type</mat-label> -->
+
+                  <input matInput formControlName="otherClaimType" />
+                </mat-form-field>
+              </div>
+            }
+          </div>
+        </mat-card>
+      </form>
+      <div class="button-container">
+        <button matButton="filled" [disabled]="!claimForm.get('claimType')?.value?.length">
+          Next
+        </button>
+      </div>
+    }
+  </mat-card>
+
+  <form [formGroup]="claimForm"></form>
+</div>

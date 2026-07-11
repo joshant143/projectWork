@@ -1,0 +1,292 @@
+/* Banner */
+
+.banner-section {
+  position: relative;
+  margin-top: 8px;
+}
+
+.banner-image {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  border-radius: 0px;
+}
+
+.banner-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 85%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+  line-height: 1.4;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+/* Form Card */
+
+.main-card {
+  width: 85%;
+  flex: 1;
+  max-width: 1800px;
+  margin: -85px auto 50px;
+  position: relative;
+  z-index: 10;
+  padding: 30px;
+  border-radius: 8px;
+
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.12);
+}
+.country-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.country-label {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+mat-form-field {
+  width: 300px;
+}
+
+/* Action Cards */
+
+.action-container {
+  /* margin-top: 30px; */
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  flex-wrap: wrap;
+}
+
+.action-card {
+  width: 260px;
+  min-height: 240px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  padding: 18px;
+  cursor: pointer;
+
+  border: 1px solid #d8e2f0;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.05);
+
+  transition: all 0.3s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-10px);
+
+  box-shadow:
+    0 12px 24px rgba(53, 84, 142, 0.18),
+    0 4px 8px rgba(53, 84, 142, 0.12);
+
+  border-color: #35548e;
+}
+
+.action-icon {
+  width: 70px;
+  /* margin-bottom: 20px; */
+}
+
+.action-card h2 {
+  color: #35548e;
+  margin-bottom: 12px;
+}
+
+.action-card p {
+  color: #666;
+}
+
+.claim-form-card {
+  margin-top: 20px;
+  padding: 0;
+  border-radius: 4px;
+}
+
+/*
+.claim-form-card {
+  width: 80%;
+  margin: 24px auto;
+  padding: 0;
+  overflow: hidden;
+}
+*/
+
+.claim-header {
+  background: #0d6fb8;
+  color: white;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.claim-header span:first-child {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.required-text {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/*
+.claim-header {
+  background: #0b6fb6;
+  color: white;
+  padding: 10px 10px;
+  font-size: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.required-text {
+  font-size: 14px;
+  font-weight: 400;
+}
+*/
+
+.claim-body {
+  padding: 25px 40px 30px;
+}
+
+/*
+.claim-body {
+  padding: 40px 60px;
+  justify-content: center;
+}
+*/
+
+/*
+.form-row {
+  display: grid;
+  grid-template-columns: 250px 600px;
+  align-items: center;
+}
+*/
+
+.form-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/*
+.form-row label {
+  font-size: 18px;
+  color: #444;
+  font-weight: 500;
+}
+*/
+
+.form-row label {
+  width: 240px;
+  text-align: right;
+  margin-right: 20px;
+
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+}
+
+.form-row mat-form-field {
+  width: 550px;
+}
+
+.full-width-field {
+  width: 900px;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  min-height: 56px;
+}
+
+@media (max-width: 992px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .claim-body {
+    padding: 24px;
+  }
+}
+
+.country-field {
+  width: 320px;
+}
+
+.country-field .mat-mdc-text-field-wrapper {
+  height: 42px !important;
+}
+
+.country-field .mat-mdc-form-field-flex {
+  height: 42px !important;
+  align-items: center !important;
+}
+
+.country-field .mat-mdc-select-trigger {
+  height: 42px;
+  display: flex;
+  align-items: center;
+}
+
+/*
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+*/
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 35px;
+}
+
+.button-container button {
+  min-width: 120px;
+  height: 44px;
+  border-radius: 22px;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  height: 48px !important;
+}
+
+::ng-deep .mat-mdc-form-field-infix {
+  min-height: 48px !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+::ng-deep .mat-mdc-select-trigger {
+  height: 48px;
+  align-items: center;
+}

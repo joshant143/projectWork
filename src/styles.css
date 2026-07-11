@@ -1,1 +1,70 @@
 /* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f4f4f4;
+}
+
+/* Header */
+
+.header {
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  background-color: #f4f4f4;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+  position: relative;
+  top: 5px;
+}
+
+.title {
+  flex: 1;
+  text-align: center;
+  font-size: 32px;
+  color: #35548e;
+  font-weight: 500;
+}
+
+a {
+  color: #555;
+}
+
+.app-footer {
+  margin-top: auto;
+  background: #f5f5f5;
+  border-top: 1px solid #e0e0e0;
+  padding: 20px;
+  text-align: center;
+}
+
+.footer-content {
+  text-align: center;
+}
+
+.privacy-link {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #1976d2;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.privacy-link:hover {
+  text-decoration: underline;
+}
+
+.footer-content p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
