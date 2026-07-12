@@ -1,7 +1,14 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { materialImports } from '../../../../shared/materials/material-imports';
 
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 
 import { filter, tap } from 'rxjs';
 import { ClaimSubmissionService } from '../../services/claim-submission-service';
@@ -53,19 +60,22 @@ export class ClaimMaster implements OnInit {
   }
 
   private initializeForm(): void {
-    this.claimForm = this.fb.group({
-      companyName: ['', Validators.required],
+    this.claimForm = this.fb.group(
+      {
+        companyName: [''],
 
-      policyNumber: ['', Validators.required],
+        policyNumber: [''],
 
-      policyCountry: ['', Validators.required],
+        policyCountry: ['', Validators.required],
 
-      policyType: [{ value: '', disabled: true }, Validators.required],
+        policyType: [{ value: '', disabled: true }, Validators.required],
 
-      claimType: [{ value: '', disabled: true }, Validators.required],
+        claimType: [{ value: '', disabled: true }, Validators.required],
 
-      otherClaimType: [''],
-    });
+        otherClaimType: [''],
+      },
+      { validators: this.atLeastOneIdentifierValidator },
+    );
   }
   private loadMasterData(): void {
     this.claimService.getPolicyCountries().subscribe({
@@ -128,6 +138,25 @@ export class ClaimMaster implements OnInit {
 
         this.claimForm.get('claimType')?.enable();
       });
+  }
+
+  canProceed(): boolean {
+    const companyName = this.claimForm?.get('companyName')?.value?.toString().trim();
+    const policyNumber = this.claimForm?.get('policyNumber')?.value?.toString().trim();
+    const hasClaimType = !!this.claimForm?.get('claimType')?.value?.length;
+    const otherClaimType = this.claimForm?.get('otherClaimType')?.value?.toString().trim();
+    const isOthersSelected = this.claimForm?.get('claimType')?.value?.includes('OTHERS');
+
+    return (
+      !!(companyName || policyNumber) && hasClaimType && (!isOthersSelected || !!otherClaimType)
+    );
+  }
+
+  private atLeastOneIdentifierValidator(group: AbstractControl): ValidationErrors | null {
+    const companyName = group.get('companyName')?.value?.toString().trim();
+    const policyNumber = group.get('policyNumber')?.value?.toString().trim();
+
+    return companyName || policyNumber ? null : { atLeastOneIdentifier: true };
   }
 
   submit(): void {

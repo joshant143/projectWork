@@ -40,9 +40,20 @@
             <div class="form-row">
               <label>Your Company's Name</label>
 
-              <mat-form-field appearance="outline" class="compact-field">
-                <input matInput formControlName="companyName" />
-              </mat-form-field>
+              <div class="field-with-message">
+                <mat-form-field appearance="outline" class="compact-field">
+                  <input matInput formControlName="companyName" />
+                </mat-form-field>
+
+                @if (
+                  claimForm.hasError('atLeastOneIdentifier') &&
+                  (claimForm.get('companyName')?.touched || claimForm.get('policyNumber')?.touched)
+                ) {
+                  <div class="validation-message">
+                    Please enter your company name or policy number.
+                  </div>
+                }
+              </div>
             </div>
 
             <div class="form-row">
@@ -99,20 +110,25 @@
               <div class="form-row">
                 <label>Specify 'Others' Claim Type</label>
 
-                <mat-form-field appearance="outline">
-                  <!-- <mat-label>Specify 'Others' Claim Type</mat-label> -->
+                <div class="field-with-message">
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="otherClaimType" />
+                  </mat-form-field>
 
-                  <input matInput formControlName="otherClaimType" />
-                </mat-form-field>
+                  @if (
+                    claimForm.get('otherClaimType')?.touched &&
+                    claimForm.get('otherClaimType')?.hasError('required')
+                  ) {
+                    <div class="validation-message">Please specify the other claim type.</div>
+                  }
+                </div>
               </div>
             }
           </div>
         </mat-card>
       </form>
       <div class="button-container">
-        <button matButton="filled" [disabled]="!claimForm.get('claimType')?.value?.length">
-          Next
-        </button>
+        <button matButton="filled" [disabled]="!canProceed()">Next</button>
       </div>
     }
   </mat-card>

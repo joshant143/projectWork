@@ -215,6 +215,20 @@ mat-form-field {
   width: 550px;
 }
 
+.field-with-message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.validation-message {
+  margin-top: -8px;
+  margin-bottom: 8px;
+  color: #d32f2f;
+  font-size: 12px;
+  font-weight: 500;
+}
+
 .full-width-field {
   width: 900px;
 }
