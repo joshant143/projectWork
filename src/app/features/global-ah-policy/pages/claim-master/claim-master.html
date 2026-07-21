@@ -10,27 +10,29 @@
 
   <!-- Main Card -->
   <mat-card class="main-card">
-    <div class="action-container">
-      <mat-card class="action-card" (click)="startNewClaim()">
-        <img src="assets/start_claim.png" alt="new claim" class="action-icon" />
+    @if (!showClaimForm() && !showStepForms()) {
+      <div class="action-container">
+        <mat-card class="action-card" (click)="startNewClaim()">
+          <img src="assets/start_claim.png" alt="new claim" class="action-icon" />
 
-        <h2>Start a New Claim</h2>
+          <h2>Start a New Claim</h2>
 
-        <p>Ready to move forward? Begin your claim in just a few simple steps.</p>
-      </mat-card>
+          <p>Ready to move forward? Begin your claim in just a few simple steps.</p>
+        </mat-card>
 
-      <mat-card class="action-card">
-        <img src="assets/upload_docs.png" alt="upload-document" class="action-icon" />
+        <mat-card class="action-card">
+          <img src="assets/upload_docs.png" alt="upload-document" class="action-icon" />
 
-        <h2>Upload Documents</h2>
+          <h2>Upload Documents</h2>
 
-        <p>Need to add documents to an existing claim? Upload them here.</p>
-      </mat-card>
-    </div>
+          <p>Need to add documents to an existing claim? Upload them here.</p>
+        </mat-card>
+      </div>
+    }
 
-    @if (showClaimForm()) {
+    @if (showClaimForm() && !showStepForms()) {
       <form [formGroup]="claimForm">
-        <mat-card class="claim-form-card">
+        <mat-card id="claimFormCard" class="claim-form-card">
           <div class="claim-header">
             <span>Tell Us About Your Claim</span>
             <span class="required-text">* Required Field</span>
@@ -128,8 +130,30 @@
         </mat-card>
       </form>
       <div class="button-container">
-        <button matButton="filled" [disabled]="!canProceed()">Next</button>
+        <button matButton="outlined" (click)="showLanding()">Previous</button>
+        <button matButton="filled" [disabled]="!canProceed()" (click)="openStepForms()">
+          Next
+        </button>
       </div>
+    }
+
+    @if (showStepForms()) {
+      <mat-card class="claim-form-card">
+        @if (claimForm.get('policyType')?.value === 'CORP_TRAVEL') {
+          <trip-info [group]="tripInfoGroup"></trip-info>
+        }
+
+        <loss-info [group]="lossInfoGroup"></loss-info>
+
+        <contact-info [group]="contactInfoGroup"></contact-info>
+
+        <div class="button-container">
+          <button matButton="outlined" (click)="showClaimStep()">Previous</button>
+          <button matButton="filled" (click)="submit()" [disabled]="claimForm.invalid">
+            Submit
+          </button>
+        </div>
+      </mat-card>
     }
   </mat-card>
 

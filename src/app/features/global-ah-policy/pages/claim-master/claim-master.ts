@@ -9,6 +9,9 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { TripInfoPage } from '../trip-info/trip-info-page';
+import { LossInfoPage } from '../loss-info/loss-info-page';
+import { ContactInfoPage } from '../contact-info/contact-info-page';
 
 import { filter, tap } from 'rxjs';
 import { ClaimSubmissionService } from '../../services/claim-submission-service';
@@ -16,7 +19,7 @@ import { ClaimType, PolicyCountry, PolicyType } from '../../models/claim-master.
 
 @Component({
   selector: 'app-claim-master',
-  imports: [...materialImports, ReactiveFormsModule],
+  imports: [...materialImports, ReactiveFormsModule, TripInfoPage, LossInfoPage, ContactInfoPage],
   templateUrl: './claim-master.html',
   styleUrl: './claim-master.css',
 })
@@ -28,10 +31,23 @@ export class ClaimMaster implements OnInit {
 
   showClaimForm = signal(false);
   showOtherClaimType = signal(false);
+  showStepForms = signal(false);
 
   countries: PolicyCountry[] = [];
   policyTypes: PolicyType[] = [];
   claimTypes: ClaimType[] = [];
+
+  get tripInfoGroup(): FormGroup {
+    return this.claimForm.get('tripInfo') as FormGroup;
+  }
+
+  get lossInfoGroup(): FormGroup {
+    return this.claimForm.get('lossInfo') as FormGroup;
+  }
+
+  get contactInfoGroup(): FormGroup {
+    return this.claimForm.get('contactInfo') as FormGroup;
+  }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -55,8 +71,44 @@ export class ClaimMaster implements OnInit {
     });
   }
 
+  openStepForms(): void {
+    if (this.canProceed()) {
+      this.showStepForms.set(true);
+      this.showClaimForm.set(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  private scrollToClaimForm(): void {
+    const card = document.getElementById('claimFormCard');
+    if (!card) {
+      return;
+    }
+
+    const headerElement = document.querySelector('.header');
+    const headerHeight = headerElement?.getBoundingClientRect().height ?? 0;
+    const top = card.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+
+    window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+  }
+
   startNewClaim(): void {
+    this.reset();
+    this.showOtherClaimType.set(false);
     this.showClaimForm.set(true);
+    this.showStepForms.set(false);
+  }
+
+  showLanding(): void {
+    this.showStepForms.set(false);
+    this.showClaimForm.set(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  showClaimStep(): void {
+    this.showStepForms.set(false);
+    this.showClaimForm.set(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   private initializeForm(): void {
@@ -73,6 +125,29 @@ export class ClaimMaster implements OnInit {
         claimType: [{ value: '', disabled: true }, Validators.required],
 
         otherClaimType: [''],
+
+        tripInfo: this.fb.group({
+          departureDate: ['', Validators.required],
+          returnDate: [''],
+          reason: ['', Validators.required],
+          departureCity: [''],
+          destinationCity: [''],
+          departureCountry: [''],
+          destinationCountry: [''],
+        }),
+
+        lossInfo: this.fb.group({
+          dateOfLoss: ['', Validators.required],
+          description: ['', Validators.required],
+          whereLossOccurred: [''],
+        }),
+
+        contactInfo: this.fb.group({
+          isClaimant: [null, Validators.required],
+          contactName: ['', Validators.required],
+          contactPhone: ['', Validators.required],
+          contactEmail: ['', [Validators.required, Validators.email]],
+        }),
       },
       { validators: this.atLeastOneIdentifierValidator },
     );

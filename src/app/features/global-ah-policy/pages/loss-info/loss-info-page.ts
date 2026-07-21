@@ -1,0 +1,25 @@
+import { Component, Input } from '@angular/core';
+import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+
+@Component({
+  selector: 'loss-info',
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    ReactiveFormsModule,
+  ],
+  templateUrl: './loss-info-page.html',
+  styleUrls: ['./loss-info-page.css'],
+})
+export class LossInfoPage {
+  @Input() group!: FormGroup;
+}

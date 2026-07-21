@@ -1,0 +1,40 @@
+<mat-card class="sub-card" [formGroup]="group">
+  <div class="sub-card-header">Contact Information</div>
+
+  <div class="sub-card-body">
+    <div class="form-row">
+      <label>Are you the Claimant?</label>
+
+      <mat-form-field appearance="outline">
+        <mat-select formControlName="isClaimant">
+          <mat-option [value]="true">Yes</mat-option>
+          <mat-option [value]="false">No</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <label>Contact Name</label>
+
+      <mat-form-field appearance="outline">
+        <input matInput formControlName="contactName" />
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <label>Contact Phone</label>
+
+      <mat-form-field appearance="outline">
+        <input matInput formControlName="contactPhone" />
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <label>Contact Email</label>
+
+      <mat-form-field appearance="outline">
+        <input matInput formControlName="contactEmail" />
+      </mat-form-field>
+    </div>
+  </div>
+</mat-card>

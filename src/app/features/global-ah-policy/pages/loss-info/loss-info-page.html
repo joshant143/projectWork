@@ -1,0 +1,31 @@
+<mat-card class="sub-card" [formGroup]="group">
+  <div class="sub-card-header">Loss Information</div>
+
+  <div class="sub-card-body">
+    <div class="form-row">
+      <label>Date of Loss</label>
+
+      <mat-form-field appearance="outline">
+        <input matInput [matDatepicker]="lossDate" formControlName="dateOfLoss" />
+        <mat-datepicker-toggle matSuffix [for]="lossDate"></mat-datepicker-toggle>
+        <mat-datepicker #lossDate></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <label>Description of Loss</label>
+
+      <mat-form-field appearance="outline" class="full-width-field">
+        <input matInput formControlName="description" />
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <label>Where did the loss occur?</label>
+
+      <mat-form-field appearance="outline">
+        <input matInput formControlName="whereLossOccurred" />
+      </mat-form-field>
+    </div>
+  </div>
+</mat-card>

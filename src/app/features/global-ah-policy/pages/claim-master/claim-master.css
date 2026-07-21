@@ -222,8 +222,7 @@ mat-form-field {
 }
 
 .validation-message {
-  margin-top: -8px;
-  margin-bottom: 8px;
+  margin-top: 2px;
   color: #d32f2f;
   font-size: 12px;
   font-weight: 500;
