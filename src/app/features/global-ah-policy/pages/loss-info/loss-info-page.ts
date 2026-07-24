@@ -1,25 +1,30 @@
-import { Component, Input } from '@angular/core';
-import { ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { materialImports } from '../../../../shared/materials/material-imports';
+import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'loss-info',
+  selector: 'app-loss-info',
   standalone: true,
-  imports: [
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    ReactiveFormsModule,
-  ],
+  imports: [...materialImports, ReactiveFormsModule],
   templateUrl: './loss-info-page.html',
-  styleUrls: ['./loss-info-page.css'],
+  styleUrl: './loss-info-page.css',
 })
-export class LossInfoPage {
-  @Input() group!: FormGroup;
+export class LossInfoPage implements OnInit {
+  @Input({ required: true })
+  group!: FormGroup;
+
+  ngOnInit(): void {
+    this.group.get('reportedToBhsi')?.valueChanges.subscribe((value) => {
+      const caseNumber = this.group.get('caseNumber');
+
+      if (value === true) {
+        caseNumber?.setValidators([Validators.required]);
+      } else {
+        caseNumber?.clearValidators();
+        caseNumber?.reset();
+      }
+
+      caseNumber?.updateValueAndValidity();
+    });
+  }
 }

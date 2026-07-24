@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
 @Component({
-  selector: 'contact-info',
+  selector: 'app-contact-info',
   standalone: true,
   imports: [
     MatCardModule,

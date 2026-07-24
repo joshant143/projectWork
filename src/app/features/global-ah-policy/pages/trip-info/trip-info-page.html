@@ -1,49 +1,97 @@
-<mat-card class="sub-card" [formGroup]="group">
-  <div class="sub-card-header">Trip Information</div>
+<div [formGroup]="group">
+  <mat-card class="claim-form-card">
+    <div class="app-form-card">
+      <div class="app-form-header">
+        <span class="app-form-title">Trip Information</span>
 
-  <div class="sub-card-body">
-    <div class="form-row">
-      <label>Date of Departure</label>
+        <span class="app-form-required"> * Required Field </span>
+      </div>
 
-      <mat-form-field appearance="outline">
-        <input matInput [matDatepicker]="dep" formControlName="departureDate" />
-        <mat-datepicker-toggle matSuffix [for]="dep"></mat-datepicker-toggle>
-        <mat-datepicker #dep></mat-datepicker>
-      </mat-form-field>
+      <div class="app-form-content">
+        <div class="app-form-grid">
+          <div class="app-form-group">
+            <label>Date of Departure</label>
+
+            <mat-form-field appearance="outline" class="compact-field">
+              <input
+                matInput
+                [matDatepicker]="departurePicker"
+                formControlName="departureDate"
+                placeholder="Select Date"
+              />
+
+              <mat-datepicker-toggle matIconSuffix [for]="departurePicker"> </mat-datepicker-toggle>
+
+              <mat-datepicker #departurePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="app-form-group">
+            <label>Reason for Travel</label>
+
+            <mat-form-field appearance="outline" class="compact-field">
+              <input
+                matInput
+                formControlName="reasonForTravel"
+                placeholder="Enter reason for travel"
+              />
+            </mat-form-field>
+          </div>
+
+          <div class="app-form-group">
+            <label>Departure City</label>
+
+            <mat-form-field appearance="outline" class="compact-field">
+              <input matInput formControlName="departureCity" placeholder="Enter departure city" />
+            </mat-form-field>
+          </div>
+
+          <div class="app-form-group">
+            <label>Destination City</label>
+
+            <mat-form-field appearance="outline" class="compact-field">
+              <input
+                matInput
+                formControlName="destinationCity"
+                placeholder="Enter destination city"
+              />
+            </mat-form-field>
+          </div>
+
+          <div class="app-form-group">
+            <label>Departure Country</label>
+
+            <mat-form-field appearance="outline" class="compact-field">
+              <input matInput formControlName="departureCountry" placeholder="Select Country" />
+            </mat-form-field>
+          </div>
+
+          <div class="app-form-group">
+            <label>Destination Country</label>
+
+            <mat-form-field appearance="outline" class="compact-field">
+              <input matInput formControlName="destinationCountry" placeholder="Select Country" />
+            </mat-form-field>
+          </div>
+
+          <div class="app-form-group">
+            <label>Date of Return</label>
+
+            <mat-form-field appearance="outline" class="compact-field">
+              <input
+                matInput
+                [matDatepicker]="returnPicker"
+                formControlName="returnDate"
+                placeholder="Select Date"
+              />
+
+              <mat-datepicker-toggle matIconSuffix [for]="returnPicker"> </mat-datepicker-toggle>
+
+              <mat-datepicker #returnPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div class="form-row">
-      <label>Date of Return/Expected Return</label>
-
-      <mat-form-field appearance="outline">
-        <input matInput [matDatepicker]="ret" formControlName="returnDate" />
-        <mat-datepicker-toggle matSuffix [for]="ret"></mat-datepicker-toggle>
-        <mat-datepicker #ret></mat-datepicker>
-      </mat-form-field>
-    </div>
-
-    <div class="form-row">
-      <label>Reason for Travel</label>
-
-      <mat-form-field appearance="outline">
-        <input matInput formControlName="reason" />
-      </mat-form-field>
-    </div>
-
-    <div class="form-row">
-      <label>Departure City</label>
-
-      <mat-form-field appearance="outline">
-        <input matInput formControlName="departureCity" />
-      </mat-form-field>
-    </div>
-
-    <div class="form-row">
-      <label>Destination City</label>
-
-      <mat-form-field appearance="outline">
-        <input matInput formControlName="destinationCity" />
-      </mat-form-field>
-    </div>
-  </div>
-</mat-card>
+  </mat-card>
+</div>

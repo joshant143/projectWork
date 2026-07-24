@@ -13,12 +13,13 @@ import { TripInfoPage } from '../trip-info/trip-info-page';
 import { LossInfoPage } from '../loss-info/loss-info-page';
 import { ContactInfoPage } from '../contact-info/contact-info-page';
 
-import { filter, tap } from 'rxjs';
+import { filter, single, tap } from 'rxjs';
 import { ClaimSubmissionService } from '../../services/claim-submission-service';
 import { ClaimType, PolicyCountry, PolicyType } from '../../models/claim-master.model';
 
 @Component({
   selector: 'app-claim-master',
+  standalone: true,
   imports: [...materialImports, ReactiveFormsModule, TripInfoPage, LossInfoPage, ContactInfoPage],
   templateUrl: './claim-master.html',
   styleUrl: './claim-master.css',
@@ -30,6 +31,7 @@ export class ClaimMaster implements OnInit {
   claimForm!: FormGroup;
 
   showClaimForm = signal(false);
+  showUploadForm = signal(false);
   showOtherClaimType = signal(false);
   showStepForms = signal(false);
 
@@ -49,10 +51,22 @@ export class ClaimMaster implements OnInit {
     return this.claimForm.get('contactInfo') as FormGroup;
   }
 
+  get claimantDetailsGroup(): FormGroup {
+    return this.contactInfoGroup.get('claimantDetails') as FormGroup;
+  }
+
+  get reporterDetailsGroup(): FormGroup {
+    return this.contactInfoGroup.get('reporterDetails') as FormGroup;
+  }
+
   ngOnInit(): void {
     this.initializeForm();
     this.loadMasterData();
     this.initializeDropdownDependencies();
+
+    this.claimantDetailsGroup.disable();
+    this.reporterDetailsGroup.disable();
+    this.setupClaimantSelection();
 
     this.claimForm.get('claimType')?.valueChanges.subscribe((values) => {
       const isOthersSelected = values?.includes('OTHERS');
@@ -75,21 +89,19 @@ export class ClaimMaster implements OnInit {
     if (this.canProceed()) {
       this.showStepForms.set(true);
       this.showClaimForm.set(false);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
   }
 
-  private scrollToClaimForm(): void {
-    const card = document.getElementById('claimFormCard');
-    if (!card) {
-      return;
-    }
+  openUploadDocuments(): void {
+    this.showClaimForm.set(false);
+    this.showStepForms.set(false);
+    this.showUploadForm.set(true);
 
-    const headerElement = document.querySelector('.header');
-    const headerHeight = headerElement?.getBoundingClientRect().height ?? 0;
-    const top = card.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
-
-    window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   }
 
   startNewClaim(): void {
@@ -102,6 +114,7 @@ export class ClaimMaster implements OnInit {
   showLanding(): void {
     this.showStepForms.set(false);
     this.showClaimForm.set(false);
+    this.showUploadForm.set(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -114,9 +127,12 @@ export class ClaimMaster implements OnInit {
   private initializeForm(): void {
     this.claimForm = this.fb.group(
       {
-        companyName: [''],
+        // Claim Details
+        companyName: ['', [Validators.maxLength(200)]],
 
-        policyNumber: [''],
+        policyNumber: ['', [Validators.maxLength(200)]],
+
+        claimNumber: [''],
 
         policyCountry: ['', Validators.required],
 
@@ -124,34 +140,88 @@ export class ClaimMaster implements OnInit {
 
         claimType: [{ value: '', disabled: true }, Validators.required],
 
-        otherClaimType: [''],
+        otherClaimType: ['', [Validators.maxLength(200)]],
 
+        // Trip Information
         tripInfo: this.fb.group({
-          departureDate: ['', Validators.required],
-          returnDate: [''],
-          reason: ['', Validators.required],
+          departureDate: [''],
+
+          reasonForTravel: [''],
+
           departureCity: [''],
+
           destinationCity: [''],
+
           departureCountry: [''],
+
           destinationCountry: [''],
+
+          returnDate: [''],
         }),
 
+        // Loss Information
         lossInfo: this.fb.group({
           dateOfLoss: ['', Validators.required],
-          description: ['', Validators.required],
-          whereLossOccurred: [''],
-        }),
 
+          descriptionOfLoss: ['', Validators.required],
+
+          whereDidLossOccur: ['', Validators.required],
+
+          reportedToBhsi: [null],
+          caseNumber: [''],
+        }),
+        // Contact Information
         contactInfo: this.fb.group({
-          isClaimant: [null, Validators.required],
-          contactName: ['', Validators.required],
-          contactPhone: ['', Validators.required],
-          contactEmail: ['', [Validators.required, Validators.email]],
+          isClaimant: ['', Validators.required],
+
+          // YES ➜ I am the Claimant
+          claimantDetails: this.fb.group({
+            reporterName: [''],
+            reporterDateOfBirth: [''],
+            reporterMobile: [''],
+            reporterEmail: [''],
+            reEnterReporterEmail: [''],
+            claimantAddress: [''],
+            homeCountry: [''],
+          }),
+
+          // NO ➜ Reporting on behalf of someone else
+          reporterDetails: this.fb.group({
+            claimantName: [''],
+            claimantMobile: [''],
+            claimantEmail: [''],
+            claimantEmailVerify: [''],
+
+            reporterName: [''],
+            reporterMobile: [''],
+            reporterEmail: [''],
+
+            relationshipToClaimant: [''],
+          }),
         }),
       },
-      { validators: this.atLeastOneIdentifierValidator },
+      {
+        validators: this.atLeastOneIdnetifierValidator,
+      },
     );
   }
+
+  private setupClaimantSelection(): void {
+    this.contactInfoGroup.get('isClaimant')?.valueChanges.subscribe((value) => {
+      if (value === 'YES') {
+        this.reporterDetailsGroup.reset();
+        this.reporterDetailsGroup.disable();
+
+        this.claimantDetailsGroup.enable();
+      } else if (value === 'NO') {
+        this.claimantDetailsGroup.reset();
+        this.claimantDetailsGroup.disable();
+
+        this.reporterDetailsGroup.enable();
+      }
+    });
+  }
+
   private loadMasterData(): void {
     this.claimService.getPolicyCountries().subscribe({
       next: (response) => {
@@ -227,14 +297,14 @@ export class ClaimMaster implements OnInit {
     );
   }
 
-  private atLeastOneIdentifierValidator(group: AbstractControl): ValidationErrors | null {
+  private atLeastOneIdnetifierValidator(group: AbstractControl): ValidationErrors | null {
     const companyName = group.get('companyName')?.value?.toString().trim();
     const policyNumber = group.get('policyNumber')?.value?.toString().trim();
 
     return companyName || policyNumber ? null : { atLeastOneIdentifier: true };
   }
 
-  submit(): void {
+  generateForms(): void {
     if (this.claimForm.invalid) {
       this.claimForm.markAllAsTouched();
       return;

@@ -7,7 +7,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
-  selector: 'trip-info',
+  selector: 'app-trip-info',
   standalone: true,
   imports: [
     MatCardModule,
@@ -21,5 +21,6 @@ import { MatNativeDateModule } from '@angular/material/core';
   styleUrls: ['./trip-info-page.css'],
 })
 export class TripInfoPage {
-  @Input() group!: FormGroup;
+  @Input({ required: true })
+  group!: FormGroup;
 }

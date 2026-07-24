@@ -1,28 +1,87 @@
-.sub-card {
-  margin: 16px 0;
+.section-card {
+  margin-bottom: 24px;
+  padding: 0;
 }
-.sub-card-header {
-  background: #0d6fb8;
-  color: #fff;
-  padding: 8px 12px;
+
+.section-header {
+  background: #0a74b8;
+  color: white;
+  font-size: 18px;
   font-weight: 600;
+  padding: 14px 20px;
 }
-.sub-card-body {
-  padding: 12px 16px;
+
+.section-body {
+  padding: 24px;
 }
-.sub-card .form-row {
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 40px;
+}
+
+.form-row {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  gap: 16px;
 }
-.sub-card .form-row label {
-  width: 240px;
+
+.form-row label {
+  width: 180px;
+  font-weight: 500;
+}
+
+mat-form-field {
+  flex: 1;
+}
+
+.required-text {
   text-align: right;
-  margin-right: 20px;
+  margin-bottom: 20px;
+  color: #666;
 }
-.sub-card .form-row mat-form-field {
-  width: 520px;
+
+.radio-row {
+  margin-top: 20px;
 }
-.sub-card .full-width-field {
-  width: 520px;
+
+.case-number-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 24px;
+}
+
+.case-number-section label {
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.case-number-section .mat-mdc-form-field {
+  width: 180px;
+}
+
+.bhsi-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.case-number-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.case-number-section {
+  margin-top: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.case-number-field {
+  width: 250px;
 }

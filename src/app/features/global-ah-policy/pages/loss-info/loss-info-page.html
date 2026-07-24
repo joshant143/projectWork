@@ -1,31 +1,90 @@
-<mat-card class="sub-card" [formGroup]="group">
-  <div class="sub-card-header">Loss Information</div>
+<div [formGroup]="group">
+  <mat-card class="claim-form-card">
+    <div class="app-form-card">
+      <div class="app-form-header">
+        <span class="app-form-title">Loss Information</span>
 
-  <div class="sub-card-body">
-    <div class="form-row">
-      <label>Date of Loss</label>
+        <span class="app-form-required"> * Required Field </span>
+      </div>
 
-      <mat-form-field appearance="outline">
-        <input matInput [matDatepicker]="lossDate" formControlName="dateOfLoss" />
-        <mat-datepicker-toggle matSuffix [for]="lossDate"></mat-datepicker-toggle>
-        <mat-datepicker #lossDate></mat-datepicker>
-      </mat-form-field>
+      <div class="app-form-content">
+        <div class="app-form-grid">
+          <!-- Date of Loss -->
+          <div class="app-form-group">
+            <label>Date of Loss *</label>
+
+            <mat-form-field appearance="outline" class="compact-field">
+              <input
+                matInput
+                [matDatepicker]="lossPicker"
+                formControlName="dateOfLoss"
+                placeholder="Select Date"
+              />
+
+              <mat-datepicker-toggle matIconSuffix [for]="lossPicker"> </mat-datepicker-toggle>
+
+              <mat-datepicker #lossPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <!-- Description of Loss -->
+          <div class="app-form-group">
+            <label class="field-label">
+              <mat-icon
+                class="info-icon"
+                matTooltip="The country where the insurance policy was issued."
+              >
+                info
+              </mat-icon>
+              Description of Loss *
+            </label>
+
+            <mat-form-field appearance="outline">
+              <textarea
+                matInput
+                rows="4"
+                formControlName="descriptionOfLoss"
+                placeholder="Briefly explain what happened"
+              >
+              </textarea>
+            </mat-form-field>
+          </div>
+          <!-- Loss Location -->
+          <div class="app-form-group">
+            <label>Where did the loss occur? *</label>
+
+            <mat-form-field appearance="outline" class="compact-field">
+              <mat-select formControlName="whereDidLossOccur" placeholder="Select location">
+                <mat-option value="Hotel">Hotel</mat-option>
+                <mat-option value="Airport">Airport</mat-option>
+                <mat-option value="Taxi">Taxi</mat-option>
+                <mat-option value="Flight">Flight</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Reported to BHSI -->
+          <div class="app-form-group">
+            <label>Was this matter reported to BHSI Care & Concierge?</label>
+
+            <mat-radio-group formControlName="reportedToBhsi" class="radio-group">
+              <mat-radio-button [value]="true"> Yes </mat-radio-button>
+
+              <mat-radio-button [value]="false"> No </mat-radio-button>
+            </mat-radio-group>
+
+            @if (group.get('reportedToBhsi')?.value === true) {
+              <div class="case-number-section">
+                <label>Please provide the Case Number</label>
+
+                <mat-form-field appearance="outline" class="case-number-field compact-field">
+                  <input matInput formControlName="caseNumber" placeholder="Enter case number" />
+                </mat-form-field>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div class="form-row">
-      <label>Description of Loss</label>
-
-      <mat-form-field appearance="outline" class="full-width-field">
-        <input matInput formControlName="description" />
-      </mat-form-field>
-    </div>
-
-    <div class="form-row">
-      <label>Where did the loss occur?</label>
-
-      <mat-form-field appearance="outline">
-        <input matInput formControlName="whereLossOccurred" />
-      </mat-form-field>
-    </div>
-  </div>
-</mat-card>
+  </mat-card>
+</div>

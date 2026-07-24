@@ -4,13 +4,13 @@
     <img src="assets/banner.jpeg" alt="Banner" class="banner-image" />
 
     <div class="banner-overlay">
-      We understand that the unexpected happens. Ease starts here - because Claims is our product!
+      We understand that the unexpected happens. Ease starts here because Claims Is Our Product!
     </div>
   </div>
 
   <!-- Main Card -->
   <mat-card class="main-card">
-    @if (!showClaimForm() && !showStepForms()) {
+    @if (!showClaimForm() && !showStepForms() && !showUploadForm()) {
       <div class="action-container">
         <mat-card class="action-card" (click)="startNewClaim()">
           <img src="assets/start_claim.png" alt="new claim" class="action-icon" />
@@ -20,7 +20,7 @@
           <p>Ready to move forward? Begin your claim in just a few simple steps.</p>
         </mat-card>
 
-        <mat-card class="action-card">
+        <mat-card class="action-card" (click)="openUploadDocuments()">
           <img src="assets/upload_docs.png" alt="upload-document" class="action-icon" />
 
           <h2>Upload Documents</h2>
@@ -29,133 +29,239 @@
         </mat-card>
       </div>
     }
-
     @if (showClaimForm() && !showStepForms()) {
       <form [formGroup]="claimForm">
         <mat-card id="claimFormCard" class="claim-form-card">
-          <div class="claim-header">
-            <span>Tell Us About Your Claim</span>
-            <span class="required-text">* Required Field</span>
-          </div>
+          <div class="app-form-card">
+            <div class="app-form-header">
+              <span class="app-form-title">Initial Claim Details</span>
 
-          <div class="claim-body">
-            <div class="form-row">
-              <label>Your Company's Name</label>
+              <span class="app-form-required"> * Required Field </span>
+            </div>
 
-              <div class="field-with-message">
-                <mat-form-field appearance="outline" class="compact-field">
-                  <input matInput formControlName="companyName" />
-                </mat-form-field>
+            <div class="app-form-content">
+              <div class="app-form-intro">
+                <h4>We understand this may be a difficult time.</h4>
 
-                @if (
-                  claimForm.hasError('atLeastOneIdentifier') &&
-                  (claimForm.get('companyName')?.touched || claimForm.get('policyNumber')?.touched)
-                ) {
-                  <div class="validation-message">
-                    Please enter your company name or policy number.
+                <p>
+                  We're here to help. Please share a few details about your policy and claim so we
+                  can assist you.
+                </p>
+              </div>
+
+              <div class="app-form-grid">
+                <!-- Company Name -->
+                <div class="app-form-group">
+                  <label>Your Company's Name</label>
+
+                  <mat-form-field appearance="outline" class="compact-field">
+                    <input
+                      matInput
+                      formControlName="companyName"
+                      placeholder="Enter your company name"
+                    />
+                  </mat-form-field>
+
+                  @if (
+                    claimForm.hasError('atLeastOneIdentifier') &&
+                    (claimForm.get('companyName')?.touched ||
+                      claimForm.get('policyNumber')?.touched)
+                  ) {
+                    <div class="validation-message">
+                      Please enter your company name or policy number
+                    </div>
+                  }
+                </div>
+
+                <!-- Policy Number -->
+                <div class="app-form-group">
+                  <label class="field-label">
+                    <mat-icon
+                      class="info-icon"
+                      matTooltip="Either the Insured Company or Policy Number is required."
+                      >info</mat-icon
+                    >
+                    Policy Number
+                  </label>
+
+                  <mat-form-field appearance="outline" class="compact-field">
+                    <input
+                      matInput
+                      formControlName="policyNumber"
+                      placeholder="Enter policy number"
+                    />
+                  </mat-form-field>
+                </div>
+
+                <!-- Policy Country -->
+                <div class="app-form-group">
+                  <label class="field-label">
+                    <mat-icon
+                      class="info-icon"
+                      matTooltip="The country where the insurance policy was issued."
+                      >info</mat-icon
+                    >
+                    Policy Country
+                  </label>
+
+                  <mat-form-field appearance="outline" class="compact-field">
+                    <mat-select formControlName="policyCountry" placeholder="Select country">
+                      @for (country of countries; track country.countryCode) {
+                        <mat-option [value]="country.countryCode">
+                          {{ country.countryName }}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <!-- Policy Type -->
+                <div class="app-form-group">
+                  <label>Policy Type *</label>
+
+                  <mat-form-field appearance="outline" class="compact-field">
+                    <mat-select formControlName="policyType" placeholder="Select policy type">
+                      @for (policy of policyTypes; track policy.policyTypeCode) {
+                        <mat-option [value]="policy.policyTypeCode">
+                          {{ policy.policyTypeName }}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                  @if (
+                    claimForm.get('policyType')?.hasError('required') &&
+                    claimForm.get('policyType')?.touched
+                  ) {
+                    <div class="validation-message">Select Policy Type</div>
+                  }
+                </div>
+
+                <!-- Claim Type -->
+                <div class="app-form-group">
+                  <label class="field-label">
+                    <mat-icon
+                      class="info-icon"
+                      matTooltip="Please make sure to select a Policy Country and Policy Type before selecting Claim Type(s)."
+                      >info</mat-icon
+                    >
+                    Claim Type
+                  </label>
+
+                  <mat-form-field appearance="outline" class="compact-field">
+                    <mat-select
+                      formControlName="claimType"
+                      multiple
+                      placeholder="Select claim type"
+                    >
+                      @for (claim of claimTypes; track claim.claimTypeCode) {
+                        <mat-option [value]="claim.claimTypeCode">
+                          {{ claim.claimTypeName }}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                  @if (
+                    claimForm.get('claimType')?.hasError('required') &&
+                    claimForm.get('claimType')?.touched
+                  ) {
+                    <div class="validation-message">Select Claim Type</div>
+                  }
+                </div>
+
+                <!-- Other Claim Type -->
+                @if (showOtherClaimType()) {
+                  <div class="app-form-group">
+                    <label>Specify 'Others' Claim Type *</label>
+
+                    <mat-form-field appearance="outline" class="compact-field">
+                      <input
+                        matInput
+                        formControlName="otherClaimType"
+                        placeholder="Enter claim type"
+                      />
+                    </mat-form-field>
+
+                    @if (
+                      claimForm.get('otherClaimType')?.touched &&
+                      claimForm.get('otherClaimType')?.hasError('required')
+                    ) {
+                      <div class="validation-message">Please specify the other claim type.</div>
+                    }
                   </div>
                 }
               </div>
             </div>
-
-            <div class="form-row">
-              <label>Policy Number</label>
-
-              <mat-form-field appearance="fill">
-                <input matInput formControlName="policyNumber" />
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <label>Policy Country*</label>
-
-              <mat-form-field appearance="outline">
-                <mat-select formControlName="policyCountry">
-                  @for (country of countries; track country.countryCode) {
-                    <mat-option [value]="country.countryCode">
-                      {{ country.countryName }}
-                    </mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <label>Policy Type*</label>
-
-              <mat-form-field appearance="fill">
-                <mat-select formControlName="policyType">
-                  @for (policy of policyTypes; track policy.policyTypeCode) {
-                    <mat-option [value]="policy.policyTypeCode">
-                      {{ policy.policyTypeName }}
-                    </mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <label>Claim Type*</label>
-
-              <mat-form-field appearance="fill">
-                <mat-select formControlName="claimType" multiple>
-                  @for (claim of claimTypes; track claim.claimTypeCode) {
-                    <mat-option [value]="claim.claimTypeCode">
-                      {{ claim.claimTypeName }}
-                    </mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-            </div>
-
-            @if (showOtherClaimType()) {
-              <div class="form-row">
-                <label>Specify 'Others' Claim Type</label>
-
-                <div class="field-with-message">
-                  <mat-form-field appearance="outline">
-                    <input matInput formControlName="otherClaimType" />
-                  </mat-form-field>
-
-                  @if (
-                    claimForm.get('otherClaimType')?.touched &&
-                    claimForm.get('otherClaimType')?.hasError('required')
-                  ) {
-                    <div class="validation-message">Please specify the other claim type.</div>
-                  }
-                </div>
-              </div>
-            }
           </div>
         </mat-card>
+
+        <div class="button-container">
+          <button matButton="outlined" (click)="showLanding()">Previous</button>
+
+          <button
+            class="next-btn"
+            matButton="filled"
+            [disabled]="!canProceed()"
+            (click)="openStepForms()"
+          >
+            Next
+          </button>
+        </div>
       </form>
+    }
+    @if (showUploadForm()) {
+      <form [formGroup]="claimForm">
+        <mat-card class="claim-form-card">
+          <div class="claim-header">
+            <span>Upload Documents</span>
+          </div>
+
+          <div class="claim-body">
+            <div class="form-row">
+              <label>Claim Number*</label>
+
+              <mat-form-field appearance="outline">
+                <input matInput placeholder="Enter Claim Number" formControlName="claimNumber" />
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card>
+
+        <div class="button-container">
+          <button mat-stroked-button type="button" (click)="showLanding()">Previous</button>
+
+          <button mat-flat-button color="primary">Search</button>
+        </div>
+      </form>
+    }
+
+    @if (showStepForms()) {
+      @if (claimForm.get('policyType')?.value == 'CORP_TRAVEL') {
+        <mat-card class="claim-form-card">
+          <app-trip-info [group]="tripInfoGroup"></app-trip-info>
+        </mat-card>
+      }
+
+      <mat-card class="claim-form-card">
+        <app-loss-info [group]="lossInfoGroup"></app-loss-info>
+      </mat-card>
+
+      <mat-card class="claim-form-card">
+        <app-contact-info [group]="contactInfoGroup"></app-contact-info>
+      </mat-card>
       <div class="button-container">
-        <button matButton="outlined" (click)="showLanding()">Previous</button>
-        <button matButton="filled" [disabled]="!canProceed()" (click)="openStepForms()">
+        <button type="button" mat-stroked-button matButton="outlined" (click)="showClaimStep()">
+          Previous
+        </button>
+
+        <button
+          matButton="filled"
+          class="next-btn"
+          (click)="generateForms()"
+          [disabled]="claimForm.invalid"
+        >
           Next
         </button>
       </div>
     }
-
-    @if (showStepForms()) {
-      <mat-card class="claim-form-card">
-        @if (claimForm.get('policyType')?.value === 'CORP_TRAVEL') {
-          <trip-info [group]="tripInfoGroup"></trip-info>
-        }
-
-        <loss-info [group]="lossInfoGroup"></loss-info>
-
-        <contact-info [group]="contactInfoGroup"></contact-info>
-
-        <div class="button-container">
-          <button matButton="outlined" (click)="showClaimStep()">Previous</button>
-          <button matButton="filled" (click)="submit()" [disabled]="claimForm.invalid">
-            Submit
-          </button>
-        </div>
-      </mat-card>
-    }
   </mat-card>
-
-  <form [formGroup]="claimForm"></form>
 </div>

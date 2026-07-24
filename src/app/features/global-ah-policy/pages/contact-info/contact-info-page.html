@@ -1,40 +1,53 @@
-<mat-card class="sub-card" [formGroup]="group">
-  <div class="sub-card-header">Contact Information</div>
+<div [formGroup]="group">
+  <mat-card class="claim-form-card">
+    <div class="app-form-card">
+      <div class="app-form-header">
+        <span class="app-form-title">Contact Information</span>
+        <span class="app-form-required">* Required Field</span>
+      </div>
 
-  <div class="sub-card-body">
-    <div class="form-row">
-      <label>Are you the Claimant?</label>
+      <div class="app-form-content">
+        <div class="app-form-grid">
+          <!-- Are you the Claimant -->
+          <div class="app-form-group">
+            <label>Are you the Claimant?</label>
 
-      <mat-form-field appearance="outline">
-        <mat-select formControlName="isClaimant">
-          <mat-option [value]="true">Yes</mat-option>
-          <mat-option [value]="false">No</mat-option>
-        </mat-select>
-      </mat-form-field>
+            <mat-form-field appearance="outline" class="compact-field">
+              <mat-select formControlName="isClaimant">
+                <mat-option [value]="true">Yes</mat-option>
+                <mat-option [value]="false">No</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Contact Name -->
+          <div class="app-form-group">
+            <label>Contact Name</label>
+
+            <mat-form-field appearance="outline" class="compact-field">
+              <input matInput formControlName="contactName" placeholder="Enter Contact Name" />
+            </mat-form-field>
+          </div>
+
+          <!-- Contact Phone -->
+          <div class="app-form-group">
+            <label>Contact Phone</label>
+
+            <mat-form-field appearance="outline" class="compact-field">
+              <input matInput formControlName="contactPhone" placeholder="Enter Contact Phone" />
+            </mat-form-field>
+          </div>
+
+          <!-- Contact Email -->
+          <div class="app-form-group">
+            <label>Contact Email</label>
+
+            <mat-form-field appearance="outline" class="compact-field">
+              <input matInput formControlName="contactEmail" placeholder="Enter Contact Email" />
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div class="form-row">
-      <label>Contact Name</label>
-
-      <mat-form-field appearance="outline">
-        <input matInput formControlName="contactName" />
-      </mat-form-field>
-    </div>
-
-    <div class="form-row">
-      <label>Contact Phone</label>
-
-      <mat-form-field appearance="outline">
-        <input matInput formControlName="contactPhone" />
-      </mat-form-field>
-    </div>
-
-    <div class="form-row">
-      <label>Contact Email</label>
-
-      <mat-form-field appearance="outline">
-        <input matInput formControlName="contactEmail" />
-      </mat-form-field>
-    </div>
-  </div>
-</mat-card>
+  </mat-card>
+</div>

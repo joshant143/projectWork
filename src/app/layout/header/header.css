@@ -5,14 +5,48 @@
   right: 0;
   z-index: 1000;
   width: 100%;
-  background-color: cadetblue;
+  border-bottom: 3px solid #d9b14a;
+  background-color: #182a54;
 }
 
 .logo {
   height: 40px;
   margin-right: 12px;
+  margin-bottom: 10px;
 }
 
 .title {
+  margin: 0;
+  color: #d9b14a;
+  font-size: 28px;
   font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  position: relative;
+  display: inline-block;
+}
+
+.headerButton {
+  background: transparent;
+  color: #d9b14a;
+
+  border: 1.5px solid #d9b14a;
+  border-radius: 24px;
+
+  padding: 10px 20px;
+  min-width: 150px;
+  height: 42px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.headerButton:hover {
+  background: #d9b14a;
+  color: #182a54;
 }
