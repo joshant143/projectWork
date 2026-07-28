@@ -133,7 +133,7 @@ export const CLAIM_MASTER_DATA: PolicyCountry[] = [
           },
           {
             claimTypeCode: 'BAGGAGE',
-            claimTypeName: 'Baggage and personal effects',
+            claimTypeName: 'Baggage and Personal Effects',
           },
           {
             claimTypeCode: 'RENTAL_VEHICLE',

@@ -212,3 +212,14 @@
   flex-direction: column;
   align-items: flex-start;
 }
+
+.checkbook-options {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 12px;
+}
+
+.mat-checkbox {
+  padding: 0;
+}

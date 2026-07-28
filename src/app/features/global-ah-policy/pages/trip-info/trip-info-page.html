@@ -9,87 +9,64 @@
 
       <div class="app-form-content">
         <div class="app-form-grid">
-          <div class="app-form-group">
-            <label>Date of Departure</label>
+          <ng-container *ngFor="let field of config; let i = index">
+            <div class="app-form-group">
+              <label>{{ field.label }}<span *ngIf="field.required"> *</span></label>
 
-            <mat-form-field appearance="outline" class="compact-field">
-              <input
-                matInput
-                [matDatepicker]="departurePicker"
-                formControlName="departureDate"
-                placeholder="Select Date"
-              />
+              <ng-container [ngSwitch]="field.type">
+                <mat-form-field *ngSwitchCase="'text'" appearance="outline" class="compact-field">
+                  <input
+                    matInput
+                    [formControlName]="field.name"
+                    [placeholder]="field.placeholder || ''"
+                  />
+                </mat-form-field>
 
-              <mat-datepicker-toggle matIconSuffix [for]="departurePicker"> </mat-datepicker-toggle>
+                <mat-form-field
+                  *ngSwitchCase="'textarea'"
+                  appearance="outline"
+                  class="compact-field"
+                >
+                  <textarea
+                    matInput
+                    rows="4"
+                    [formControlName]="field.name"
+                    [placeholder]="field.placeholder || ''"
+                  ></textarea>
+                </mat-form-field>
 
-              <mat-datepicker #departurePicker></mat-datepicker>
-            </mat-form-field>
-          </div>
+                <mat-form-field *ngSwitchCase="'date'" appearance="outline" class="compact-field">
+                  <input
+                    matInput
+                    [matDatepicker]="picker"
+                    [formControlName]="field.name"
+                    [placeholder]="field.placeholder || ''"
+                  />
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
 
-          <div class="app-form-group">
-            <label>Reason for Travel</label>
+                <mat-form-field *ngSwitchCase="'select'" appearance="outline" class="compact-field">
+                  <mat-select
+                    [formControlName]="field.name"
+                    [placeholder]="field.placeholder || ''"
+                  >
+                    <mat-option *ngFor="let option of field.options" [value]="option.value">
+                      {{ option.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
 
-            <mat-form-field appearance="outline" class="compact-field">
-              <input
-                matInput
-                formControlName="reasonForTravel"
-                placeholder="Enter reason for travel"
-              />
-            </mat-form-field>
-          </div>
-
-          <div class="app-form-group">
-            <label>Departure City</label>
-
-            <mat-form-field appearance="outline" class="compact-field">
-              <input matInput formControlName="departureCity" placeholder="Enter departure city" />
-            </mat-form-field>
-          </div>
-
-          <div class="app-form-group">
-            <label>Destination City</label>
-
-            <mat-form-field appearance="outline" class="compact-field">
-              <input
-                matInput
-                formControlName="destinationCity"
-                placeholder="Enter destination city"
-              />
-            </mat-form-field>
-          </div>
-
-          <div class="app-form-group">
-            <label>Departure Country</label>
-
-            <mat-form-field appearance="outline" class="compact-field">
-              <input matInput formControlName="departureCountry" placeholder="Select Country" />
-            </mat-form-field>
-          </div>
-
-          <div class="app-form-group">
-            <label>Destination Country</label>
-
-            <mat-form-field appearance="outline" class="compact-field">
-              <input matInput formControlName="destinationCountry" placeholder="Select Country" />
-            </mat-form-field>
-          </div>
-
-          <div class="app-form-group">
-            <label>Date of Return</label>
-
-            <mat-form-field appearance="outline" class="compact-field">
-              <input
-                matInput
-                [matDatepicker]="returnPicker"
-                formControlName="returnDate"
-                placeholder="Select Date"
-              />
-
-              <mat-datepicker-toggle matIconSuffix [for]="returnPicker"> </mat-datepicker-toggle>
-
-              <mat-datepicker #returnPicker></mat-datepicker>
-            </mat-form-field>
-          </div>
+                <div *ngSwitchCase="'radio'" class="radio-group">
+                  <mat-radio-group [formControlName]="field.name">
+                    <mat-radio-button *ngFor="let option of field.options" [value]="option.value">
+                      {{ option.label }}
+                    </mat-radio-button>
+                  </mat-radio-group>
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
         </div>
       </div>
     </div>

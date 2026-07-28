@@ -1,0 +1,7 @@
+<ng-container *ngFor="let section of sections; trackBy: trackByClaimTypeCode">
+  <app-checkbook-form
+    [group]="section.group"
+    [title]="section.title"
+    [config]="section.config"
+  ></app-checkbook-form>
+</ng-container>

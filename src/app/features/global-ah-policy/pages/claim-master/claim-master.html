@@ -10,7 +10,7 @@
 
   <!-- Main Card -->
   <mat-card class="main-card">
-    @if (!showClaimForm() && !showStepForms() && !showUploadForm()) {
+    @if (!showClaimForm() && !showStepForms() && !showUploadForm() && !showClaimTypeForms()) {
       <div class="action-container">
         <mat-card class="action-card" (click)="startNewClaim()">
           <img src="assets/start_claim.png" alt="new claim" class="action-icon" />
@@ -29,7 +29,7 @@
         </mat-card>
       </div>
     }
-    @if (showClaimForm() && !showStepForms()) {
+    @if (showClaimForm() && !showStepForms() && !showClaimTypeForms()) {
       <form [formGroup]="claimForm">
         <mat-card id="claimFormCard" class="claim-form-card">
           <div class="app-form-card">
@@ -235,18 +235,25 @@
     }
 
     @if (showStepForms()) {
-      @if (claimForm.get('policyType')?.value == 'CORP_TRAVEL') {
-        <mat-card class="claim-form-card">
-          <app-trip-info [group]="tripInfoGroup"></app-trip-info>
-        </mat-card>
-      }
-
       <mat-card class="claim-form-card">
-        <app-loss-info [group]="lossInfoGroup"></app-loss-info>
+        <app-trip-info
+          [group]="tripInfoGroup"
+          [config]="regionConfig?.tripInfoFields || []"
+        ></app-trip-info>
       </mat-card>
 
       <mat-card class="claim-form-card">
-        <app-contact-info [group]="contactInfoGroup"></app-contact-info>
+        <app-loss-info
+          [group]="lossInfoGroup"
+          [config]="regionConfig?.lossInfoFields || []"
+        ></app-loss-info>
+      </mat-card>
+
+      <mat-card class="claim-form-card">
+        <app-contact-info
+          [group]="contactInfoGroup"
+          [config]="regionConfig?.contactInfoFields || []"
+        ></app-contact-info>
       </mat-card>
       <div class="button-container">
         <button type="button" mat-stroked-button matButton="outlined" (click)="showClaimStep()">
@@ -257,9 +264,28 @@
           matButton="filled"
           class="next-btn"
           (click)="generateForms()"
-          [disabled]="claimForm.invalid"
+          [disabled]="tripInfoGroup.invalid || lossInfoGroup.invalid || contactInfoGroup.invalid"
         >
           Next
+        </button>
+      </div>
+    }
+
+    @if (showClaimTypeForms()) {
+      <app-claim-type-forms [sections]="claimTypeFormSections"></app-claim-type-forms>
+
+      <div class="button-container">
+        <button type="button" mat-stroked-button matButton="outlined" (click)="openStepForms()">
+          Previous
+        </button>
+
+        <button
+          matButton="filled"
+          class="next-btn"
+          (click)="submitClaim()"
+          [disabled]="claimTypeFormArray.invalid"
+        >
+          Submit
         </button>
       </div>
     }

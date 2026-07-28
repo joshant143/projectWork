@@ -1,0 +1,13 @@
+.app-form-group {
+  margin-bottom: 16px;
+}
+
+.compact-field {
+  width: 100%;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

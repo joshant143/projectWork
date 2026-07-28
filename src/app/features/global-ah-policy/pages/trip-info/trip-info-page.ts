@@ -1,20 +1,27 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio';
+import { FieldConfig } from '../../models/region.model';
 
 @Component({
   selector: 'app-trip-info',
   standalone: true,
   imports: [
+    CommonModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatSelectModule,
+    MatRadioModule,
     ReactiveFormsModule,
   ],
   templateUrl: './trip-info-page.html',
@@ -23,4 +30,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 export class TripInfoPage {
   @Input({ required: true })
   group!: FormGroup;
+
+  @Input({ required: true })
+  config: FieldConfig[] = [];
 }

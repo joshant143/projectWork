@@ -9,80 +9,81 @@
 
       <div class="app-form-content">
         <div class="app-form-grid">
-          <!-- Date of Loss -->
-          <div class="app-form-group">
-            <label>Date of Loss *</label>
+          <ng-container *ngFor="let field of config">
+            <div class="app-form-group">
+              <label>{{ field.label }}<span *ngIf="field.required"> *</span></label>
 
-            <mat-form-field appearance="outline" class="compact-field">
-              <input
-                matInput
-                [matDatepicker]="lossPicker"
-                formControlName="dateOfLoss"
-                placeholder="Select Date"
-              />
-
-              <mat-datepicker-toggle matIconSuffix [for]="lossPicker"> </mat-datepicker-toggle>
-
-              <mat-datepicker #lossPicker></mat-datepicker>
-            </mat-form-field>
-          </div>
-
-          <!-- Description of Loss -->
-          <div class="app-form-group">
-            <label class="field-label">
-              <mat-icon
-                class="info-icon"
-                matTooltip="The country where the insurance policy was issued."
-              >
-                info
-              </mat-icon>
-              Description of Loss *
-            </label>
-
-            <mat-form-field appearance="outline">
-              <textarea
-                matInput
-                rows="4"
-                formControlName="descriptionOfLoss"
-                placeholder="Briefly explain what happened"
-              >
-              </textarea>
-            </mat-form-field>
-          </div>
-          <!-- Loss Location -->
-          <div class="app-form-group">
-            <label>Where did the loss occur? *</label>
-
-            <mat-form-field appearance="outline" class="compact-field">
-              <mat-select formControlName="whereDidLossOccur" placeholder="Select location">
-                <mat-option value="Hotel">Hotel</mat-option>
-                <mat-option value="Airport">Airport</mat-option>
-                <mat-option value="Taxi">Taxi</mat-option>
-                <mat-option value="Flight">Flight</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-
-          <!-- Reported to BHSI -->
-          <div class="app-form-group">
-            <label>Was this matter reported to BHSI Care & Concierge?</label>
-
-            <mat-radio-group formControlName="reportedToBhsi" class="radio-group">
-              <mat-radio-button [value]="true"> Yes </mat-radio-button>
-
-              <mat-radio-button [value]="false"> No </mat-radio-button>
-            </mat-radio-group>
-
-            @if (group.get('reportedToBhsi')?.value === true) {
-              <div class="case-number-section">
-                <label>Please provide the Case Number</label>
-
-                <mat-form-field appearance="outline" class="case-number-field compact-field">
-                  <input matInput formControlName="caseNumber" placeholder="Enter case number" />
+              <ng-container [ngSwitch]="field.type">
+                <mat-form-field *ngSwitchCase="'text'" appearance="outline" class="compact-field">
+                  <input
+                    matInput
+                    [formControlName]="field.name"
+                    [placeholder]="field.placeholder || ''"
+                  />
                 </mat-form-field>
-              </div>
-            }
-          </div>
+
+                <mat-form-field
+                  *ngSwitchCase="'textarea'"
+                  appearance="outline"
+                  class="compact-field"
+                >
+                  <textarea
+                    matInput
+                    rows="4"
+                    [formControlName]="field.name"
+                    [placeholder]="field.placeholder || ''"
+                  ></textarea>
+                </mat-form-field>
+
+                <mat-form-field *ngSwitchCase="'date'" appearance="outline" class="compact-field">
+                  <input
+                    matInput
+                    [matDatepicker]="picker"
+                    [formControlName]="field.name"
+                    [placeholder]="field.placeholder || ''"
+                  />
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field *ngSwitchCase="'select'" appearance="outline" class="compact-field">
+                  <mat-select
+                    [formControlName]="field.name"
+                    [placeholder]="field.placeholder || ''"
+                  >
+                    <mat-option *ngFor="let option of field.options || []" [value]="option.value">
+                      {{ option.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <div *ngSwitchCase="'radio'" class="radio-group">
+                  <mat-radio-group [formControlName]="field.name">
+                    <mat-radio-button
+                      *ngFor="let option of field.options || []"
+                      [value]="option.value"
+                    >
+                      {{ option.label }}
+                    </mat-radio-button>
+                  </mat-radio-group>
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
+
+          <ng-container
+            *ngIf="
+              group.get('reportedToBhsi')?.value === 'true' ||
+              group.get('reportedToBhsi')?.value === true
+            "
+          >
+            <div class="app-form-group" *ngIf="group.get('caseNumber')">
+              <label>Please provide the Case Number</label>
+              <mat-form-field appearance="outline" class="case-number-field compact-field">
+                <input matInput formControlName="caseNumber" placeholder="Enter case number" />
+              </mat-form-field>
+            </div>
+          </ng-container>
         </div>
       </div>
     </div>
