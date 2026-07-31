@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { REGION_FORM_CONFIGS } from '../form-configs/region-config';
-import { REGION_POLICY_CLAIM_FORM_CONFIGS } from '../form-configs/checkbook-config';
+import {
+  COUNTRY_REGION_MAP,
+  REGION_FORM_CONFIGS,
+  REGION_POLICY_CLAIM_FORM_CONFIGS,
+} from '../form-configs';
 import { FieldConfig, RegionFormConfig, RegionName } from '../models/region.model';
-import { COUNTRY_REGION_MAP } from '../form-configs/region-config';
 
 @Injectable({
   providedIn: 'root',

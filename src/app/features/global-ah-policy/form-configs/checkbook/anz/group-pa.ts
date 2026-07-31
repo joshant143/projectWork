@@ -1,0 +1,14 @@
+import { FieldConfig } from '../../../models/region.model';
+import {
+  ANZ_GENERIC_PA_WEEKLY_FIELDS,
+  ANZ_GENERIC_PS_WEEKLY_FIELDS,
+  ANZ_MEDICAL_FIELDS,
+  ANZ_OTHERS_FIELDS,
+} from './field-sets';
+
+export const ANZ_GROUP_PA_CLAIM_FIELDS: Record<string, FieldConfig[]> = {
+  MEDICAL: ANZ_MEDICAL_FIELDS,
+  PA_WEEKLY: ANZ_GENERIC_PA_WEEKLY_FIELDS,
+  PS_WEEKLY: ANZ_GENERIC_PS_WEEKLY_FIELDS,
+  OTHERS: ANZ_OTHERS_FIELDS,
+};

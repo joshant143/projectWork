@@ -7,6 +7,7 @@ export const COUNTRY_REGION_MAP: Record<string, RegionName> = {
   SG: 'AME',
   AU: 'ANZ',
   NZ: 'ANZ',
+  UK: 'UK',
   GB: 'UK',
 };
 
@@ -15,7 +16,7 @@ export const REGION_FORM_CONFIGS: Record<RegionName, RegionFormConfig> = {
     tripInfoFields: [
       {
         name: 'departureDate',
-        label: 'Date of Departure',
+        label: 'Date of Departure / AME-trip',
         type: 'date',
         required: true,
         validators: [Validators.required],
@@ -61,7 +62,7 @@ export const REGION_FORM_CONFIGS: Record<RegionName, RegionFormConfig> = {
     lossInfoFields: [
       {
         name: 'dateOfLoss',
-        label: 'Date of Loss',
+        label: 'Date of Loss / AME-loss',
         type: 'date',
         required: true,
         validators: [Validators.required],
@@ -101,7 +102,7 @@ export const REGION_FORM_CONFIGS: Record<RegionName, RegionFormConfig> = {
     contactInfoFields: [
       {
         name: 'isClaimant',
-        label: 'Are you the Claimant?',
+        label: 'Are you the Claimant? / AME-contact',
         type: 'select',
         options: [
           { value: 'YES', label: 'Yes' },
@@ -140,7 +141,7 @@ export const REGION_FORM_CONFIGS: Record<RegionName, RegionFormConfig> = {
     tripInfoFields: [
       {
         name: 'departureDate',
-        label: 'Date of Departure',
+        label: 'Date of Departure / ANZ-trip',
         type: 'date',
         required: true,
         validators: [Validators.required],
@@ -180,7 +181,7 @@ export const REGION_FORM_CONFIGS: Record<RegionName, RegionFormConfig> = {
     lossInfoFields: [
       {
         name: 'dateOfLoss',
-        label: 'Date of Loss',
+        label: 'Date of Loss / ANZ-loss',
         type: 'date',
         required: true,
         validators: [Validators.required],
@@ -224,7 +225,7 @@ export const REGION_FORM_CONFIGS: Record<RegionName, RegionFormConfig> = {
     contactInfoFields: [
       {
         name: 'isClaimant',
-        label: 'Are you the Claimant?',
+        label: 'Are you the Claimant? / ANZ-contact',
         type: 'select',
         options: [
           { value: 'YES', label: 'Yes' },
@@ -271,7 +272,7 @@ export const REGION_FORM_CONFIGS: Record<RegionName, RegionFormConfig> = {
     tripInfoFields: [
       {
         name: 'departureDate',
-        label: 'Date of Departure',
+        label: 'Date of Departure / UK-trip',
         type: 'date',
         required: true,
         validators: [Validators.required],
@@ -311,7 +312,7 @@ export const REGION_FORM_CONFIGS: Record<RegionName, RegionFormConfig> = {
     lossInfoFields: [
       {
         name: 'dateOfLoss',
-        label: 'Date of Loss',
+        label: 'Date of Loss / UK-loss',
         type: 'date',
         required: true,
         validators: [Validators.required],
@@ -343,7 +344,7 @@ export const REGION_FORM_CONFIGS: Record<RegionName, RegionFormConfig> = {
     contactInfoFields: [
       {
         name: 'isClaimant',
-        label: 'Are you the Claimant?',
+        label: 'Are you the Claimant? / UK-contact',
         type: 'select',
         options: [
           { value: 'YES', label: 'Yes' },
@@ -385,4 +386,3 @@ export const REGION_FORM_CONFIGS: Record<RegionName, RegionFormConfig> = {
     ],
   },
 };
-
