@@ -13,6 +13,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 export const materialImports = [
   MatButtonModule,
@@ -30,4 +31,5 @@ export const materialImports = [
   MatTooltipModule,
   MatExpansionModule,
   MatAutocompleteModule,
+  MatSnackBarModule,
 ];

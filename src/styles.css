@@ -263,3 +263,13 @@ textarea.mat-mdc-input-element::placeholder {
     width: 100%;
   }
 }
+
+.mat-mdc-snack-bar-container.success {
+  --mdc-snackbar-container-color: #2e7d32;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+
+.mat-mdc-snack-bar-container.error {
+  --mdc-snackbar-container-color: #c62828;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}

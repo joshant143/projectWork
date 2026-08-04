@@ -1,6 +1,8 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { materialImports } from '../../../../shared/materials/material-imports';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import {
   AbstractControl,
@@ -16,7 +18,8 @@ import { LossInfoPage } from '../loss-info/loss-info-page';
 import { ContactInfoPage } from '../contact-info/contact-info-page';
 import { ClaimTypeFormsPage } from '../claim-type-forms/claim-type-forms';
 
-import { filter, tap } from 'rxjs';
+import { catchError, filter, of, switchMap, tap } from 'rxjs';
+import { IWantToOption, SaveInitialClaimDetailsRequest } from '../../models/claim-api.model';
 import { ClaimSubmissionService } from '../../services/claim-submission-service';
 import { RegionFormService } from '../../services/region-form.service';
 import {
@@ -46,6 +49,8 @@ export class ClaimMaster implements OnInit {
   private fb = inject(FormBuilder);
   private claimService = inject(ClaimSubmissionService);
   private regionService = inject(RegionFormService);
+  private snackBar = inject(MatSnackBar);
+  private destroyRef = inject(DestroyRef);
 
   claimForm!: FormGroup;
 
@@ -62,6 +67,7 @@ export class ClaimMaster implements OnInit {
   regionConfig: RegionFormConfig | null = null;
   selectedClaimTypeCodes: string[] = [];
   claimTypeFormSections: ClaimTypeFormSection[] = [];
+  private iWantToSelection: IWantToOption = 'File a Claim';
 
   get tripInfoGroup(): FormGroup {
     return this.claimForm.get('tripInfo') as FormGroup;
@@ -84,20 +90,23 @@ export class ClaimMaster implements OnInit {
     this.loadMasterData();
     this.initializeDropdownDependencies();
 
-    this.claimForm.get('claimType')?.valueChanges.subscribe((values) => {
-      const isOthersSelected = values?.includes('OTHERS');
+    this.claimForm
+      .get('claimType')
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((values: string[] | null) => {
+        const isOthersSelected = values?.includes('OTHERS');
 
-      this.showOtherClaimType.set(isOthersSelected);
+        this.showOtherClaimType.set(!!isOthersSelected);
 
-      if (isOthersSelected) {
-        this.claimForm.get('otherClaimType')?.setValidators([Validators.required]);
-      } else {
-        this.claimForm.get('otherClaimType')?.clearValidators();
-        this.claimForm.get('otherClaimType')?.reset();
-      }
+        if (isOthersSelected) {
+          this.claimForm.get('otherClaimType')?.setValidators([Validators.required]);
+        } else {
+          this.claimForm.get('otherClaimType')?.clearValidators();
+          this.claimForm.get('otherClaimType')?.reset();
+        }
 
-      this.claimForm.get('otherClaimType')?.updateValueAndValidity();
-    });
+        this.claimForm.get('otherClaimType')?.updateValueAndValidity();
+      });
   }
 
   openStepForms(): void {
@@ -106,25 +115,32 @@ export class ClaimMaster implements OnInit {
       return;
     }
 
-    const selectedCountryCode = this.claimForm.get('policyCountry')?.value;
-    const region = this.regionService.getRegionByCountry(selectedCountryCode);
+    const payload = this.buildInitialClaimDetailsPayload();
 
-    if (!region) {
-      console.error('Unknown region for country', selectedCountryCode);
-      return;
-    }
+    this.claimService
+      .saveInitialClaimDetails(payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          if (response.success === false) {
+            this.showPopup(response.message || 'Unable to save initial claim details.');
+            return;
+          }
 
-    this.selectedRegion = region;
-    this.regionConfig = this.regionService.getRegionFormConfig(region);
-    this.initializeRegionStepForm();
-
-    this.showStepForms.set(true);
-    this.showClaimForm.set(false);
-    this.showClaimTypeForms.set(false);
-    window.scrollTo({ top: 0, behavior: 'auto' });
+          this.showPopup(
+            response.message || 'Initial claim details saved successfully.',
+            'success',
+          );
+          this.proceedToStepForms();
+        },
+        error: (error: Error) => {
+          this.showPopup(error.message || 'Unable to save initial claim details.');
+        },
+      });
   }
 
   openUploadDocuments(): void {
+    this.iWantToSelection = 'Upload Documents';
     this.showClaimForm.set(false);
     this.showStepForms.set(false);
     this.showClaimTypeForms.set(false);
@@ -137,6 +153,7 @@ export class ClaimMaster implements OnInit {
   }
 
   startNewClaim(): void {
+    this.iWantToSelection = 'File a Claim';
     this.reset();
     this.showOtherClaimType.set(false);
     this.showClaimForm.set(true);
@@ -204,21 +221,24 @@ export class ClaimMaster implements OnInit {
   }
 
   private loadMasterData(): void {
-    this.claimService.getPolicyCountries().subscribe({
-      next: (response) => {
+    this.claimService
+      .getPolicyCountries()
+      .pipe(
+        catchError((error: Error) => {
+          this.showPopup(error.message || 'Unable to load policy countries.');
+          return of([]);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((response) => {
         this.countries = response;
-      },
-      error: (error) => {
-        console.error(error);
-      },
-    });
+      });
   }
 
   private initializeDropdownDependencies(): void {
     this.claimForm
       .get('policyCountry')
       ?.valueChanges.pipe(
-        filter(Boolean),
         tap(() => {
           this.claimForm.patchValue({
             policyType: '',
@@ -228,39 +248,63 @@ export class ClaimMaster implements OnInit {
           this.policyTypes = [];
           this.claimTypes = [];
 
+          this.claimForm.get('policyType')?.disable();
           this.claimForm.get('claimType')?.disable();
         }),
+        filter((countryCode): countryCode is string => !!countryCode),
+        switchMap((countryCode) =>
+          this.claimService.getPolicyTypes({ policyCountry: countryCode }).pipe(
+            catchError((error: Error) => {
+              this.showPopup(error.message || 'Unable to load policy types.');
+              return of([]);
+            }),
+          ),
+        ),
+        takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((countryCode) => {
-        const selectedCountry = this.countries.find(
-          (country) => country.countryCode === countryCode,
-        );
+      .subscribe((policyTypes) => {
+        this.policyTypes = policyTypes;
 
-        this.policyTypes = selectedCountry?.policyTypes ?? [];
-
-        this.claimForm.get('policyType')?.enable();
+        if (policyTypes.length) {
+          this.claimForm.get('policyType')?.enable();
+        }
       });
 
     this.claimForm
       .get('policyType')
       ?.valueChanges.pipe(
-        filter(Boolean),
         tap(() => {
           this.claimForm.patchValue({
             claimType: '',
           });
 
           this.claimTypes = [];
+          this.claimForm.get('claimType')?.disable();
         }),
+        filter((policyTypeCode): policyTypeCode is string => !!policyTypeCode),
+        switchMap((policyTypeCode) => {
+          const selectedCountryCode = this.claimForm.get('policyCountry')?.value as string;
+
+          return this.claimService
+            .getClaimTypes({
+              policyCountry: selectedCountryCode,
+              policyType: policyTypeCode,
+            })
+            .pipe(
+              catchError((error: Error) => {
+                this.showPopup(error.message || 'Unable to load claim types.');
+                return of([]);
+              }),
+            );
+        }),
+        takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((policyTypeCode) => {
-        const selectedPolicyType = this.policyTypes.find(
-          (policy) => policy.policyTypeCode === policyTypeCode,
-        );
+      .subscribe((claimTypes) => {
+        this.claimTypes = claimTypes;
 
-        this.claimTypes = selectedPolicyType?.claimTypes ?? [];
-
-        this.claimForm.get('claimType')?.enable();
+        if (claimTypes.length) {
+          this.claimForm.get('claimType')?.enable();
+        }
       });
   }
 
@@ -358,6 +402,49 @@ export class ClaimMaster implements OnInit {
     };
 
     console.log('Claim submitted', collectivePayload);
+  }
+
+  private buildInitialClaimDetailsPayload(): SaveInitialClaimDetailsRequest {
+    const rawValue = this.claimForm.getRawValue();
+    const selectedClaimTypes = (rawValue.claimType as string[] | null) ?? [];
+
+    return {
+      iWantTo: this.iWantToSelection,
+      companyName: (rawValue.companyName as string | null)?.trim() || '',
+      policyNumber: (rawValue.policyNumber as string | null)?.trim() || '',
+      policyCountry: (rawValue.policyCountry as string | null) || '',
+      policyType: (rawValue.policyType as string | null) || '',
+      claimType: selectedClaimTypes.join(','),
+      other: (rawValue.otherClaimType as string | null)?.trim() || '',
+    };
+  }
+
+  private proceedToStepForms(): void {
+    const selectedCountryCode = this.claimForm.get('policyCountry')?.value;
+    const region = this.regionService.getRegionByCountry(selectedCountryCode);
+
+    if (!region) {
+      this.showPopup('Unknown region for selected country.');
+      return;
+    }
+
+    this.selectedRegion = region;
+    this.regionConfig = this.regionService.getRegionFormConfig(region);
+    this.initializeRegionStepForm();
+
+    this.showStepForms.set(true);
+    this.showClaimForm.set(false);
+    this.showClaimTypeForms.set(false);
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }
+
+  private showPopup(message: string, panelClass: 'success' | 'error' = 'error'): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 4000,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      panelClass,
+    });
   }
 
   reset(): void {
