@@ -40,7 +40,7 @@
                     matInput
                     [matDatepicker]="picker"
                     [formControlName]="field.name"
-                    [placeholder]="field.placeholder || ''"
+                    [placeholder]="field.placeholder || regionDateService.getDatePlaceholder()"
                   />
                   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                   <mat-datepicker #picker></mat-datepicker>

@@ -21,6 +21,7 @@ import { ClaimTypeFormsPage } from '../claim-type-forms/claim-type-forms';
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
 import { IWantToOption, SaveInitialClaimDetailsRequest } from '../../models/claim-api.model';
 import { ClaimSubmissionService } from '../../services/claim-submission-service';
+import { RegionDateService } from '../../services/region-date.service';
 import { RegionFormService } from '../../services/region-form.service';
 import {
   ClaimTypeFormSection,
@@ -48,6 +49,7 @@ import { ClaimType, PolicyCountry, PolicyType } from '../../models/claim-master.
 export class ClaimMaster implements OnInit {
   private fb = inject(FormBuilder);
   private claimService = inject(ClaimSubmissionService);
+  private regionDateService = inject(RegionDateService);
   private regionService = inject(RegionFormService);
   private snackBar = inject(MatSnackBar);
   private destroyRef = inject(DestroyRef);
@@ -141,6 +143,7 @@ export class ClaimMaster implements OnInit {
 
   openUploadDocuments(): void {
     this.iWantToSelection = 'Upload Documents';
+    this.regionDateService.setActiveRegion(null);
     this.showClaimForm.set(false);
     this.showStepForms.set(false);
     this.showClaimTypeForms.set(false);
@@ -162,6 +165,7 @@ export class ClaimMaster implements OnInit {
   }
 
   showLanding(): void {
+    this.regionDateService.setActiveRegion(null);
     this.showStepForms.set(false);
     this.showClaimForm.set(false);
     this.showUploadForm.set(false);
@@ -429,6 +433,7 @@ export class ClaimMaster implements OnInit {
     }
 
     this.selectedRegion = region;
+    this.regionDateService.setActiveRegion(region);
     this.regionConfig = this.regionService.getRegionFormConfig(region);
     this.initializeRegionStepForm();
 
@@ -449,6 +454,7 @@ export class ClaimMaster implements OnInit {
 
   reset(): void {
     this.claimForm.reset();
+    this.regionDateService.setActiveRegion(null);
 
     this.policyTypes = [];
     this.claimTypes = [];

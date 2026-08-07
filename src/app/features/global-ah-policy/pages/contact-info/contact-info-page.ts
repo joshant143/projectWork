@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +9,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FieldConfig } from '../../models/region.model';
+import { REGION_DATE_PROVIDERS } from '../../services/region-date-adapter';
+import { RegionDateService } from '../../services/region-date.service';
 
 @Component({
   selector: 'app-contact-info',
@@ -24,10 +26,13 @@ import { FieldConfig } from '../../models/region.model';
     MatNativeDateModule,
     ReactiveFormsModule,
   ],
+  providers: REGION_DATE_PROVIDERS,
   templateUrl: './contact-info-page.html',
   styleUrls: ['./contact-info-page.css'],
 })
 export class ContactInfoPage {
+  readonly regionDateService = inject(RegionDateService);
+
   @Input() group!: FormGroup;
 
   @Input({ required: true })
