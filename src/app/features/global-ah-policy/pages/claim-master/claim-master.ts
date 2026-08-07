@@ -116,27 +116,27 @@ export class ClaimMaster implements OnInit {
     }
 
     const payload = this.buildInitialClaimDetailsPayload();
+    this.proceedToStepForms();
+    // this.claimService
+    //   .saveInitialClaimDetails(payload)
+    //   .pipe(takeUntilDestroyed(this.destroyRef))
+    //   .subscribe({
+    //     next: (response) => {
+    //       if (response.success === false) {
+    //         this.showPopup(response.message || 'Unable to save initial claim details.');
+    //         return;
+    //       }
 
-    this.claimService
-      .saveInitialClaimDetails(payload)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          if (response.success === false) {
-            this.showPopup(response.message || 'Unable to save initial claim details.');
-            return;
-          }
-
-          this.showPopup(
-            response.message || 'Initial claim details saved successfully.',
-            'success',
-          );
-          this.proceedToStepForms();
-        },
-        error: (error: Error) => {
-          this.showPopup(error.message || 'Unable to save initial claim details.');
-        },
-      });
+    //       this.showPopup(
+    //         response.message || 'Initial claim details saved successfully.',
+    //         'success',
+    //       );
+    //       this.proceedToStepForms();
+    //     },
+    //     error: (error: Error) => {
+    //       this.showPopup(error.message || 'Unable to save initial claim details.');
+    //     },
+    //   });
   }
 
   openUploadDocuments(): void {

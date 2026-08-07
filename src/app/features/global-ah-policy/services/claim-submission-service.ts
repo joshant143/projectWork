@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, delay, Observable, of, throwError } from 'rxjs';
 import { CLAIM_API_ENDPOINTS } from '../../../core/constant/api-endpoints';
 import {
   ClaimTypesResponse,
@@ -13,6 +13,7 @@ import {
   SaveInitialClaimDetailsResponse,
 } from '../models/claim-api.model';
 import { PolicyCountry } from '../models/claim-master.model';
+import { CLAIM_MASTER_DATA } from '../mock-data/claim-master.data';
 // import { CLAIM_MASTER_DATA } from '../mock-data/claim-master.data';
 
 @Injectable({
@@ -22,23 +23,32 @@ export class ClaimSubmissionService {
   constructor(private readonly http: HttpClient) {}
 
   getPolicyCountries(): Observable<PolicyCountry[]> {
-    return this.http
-      .get<PolicyCountriesResponse>(CLAIM_API_ENDPOINTS.policyCountries)
-      .pipe(catchError(this.handleHttpError('load policy countries')));
+    // return this.http
+    //   .get<PolicyCountriesResponse>(CLAIM_API_ENDPOINTS.policyCountries)
+    //   .pipe(catchError(this.handleHttpError('load policy countries')));
 
-    // return of(CLAIM_MASTER_DATA).pipe(delay(500));
+    return of(CLAIM_MASTER_DATA).pipe(delay(500));
   }
 
   getPolicyTypes(payload: GetPolicyTypesRequest): Observable<PolicyTypesResponse> {
-    return this.http
-      .post<PolicyTypesResponse>(CLAIM_API_ENDPOINTS.policyTypes, payload)
-      .pipe(catchError(this.handleHttpError('load policy types')));
+    // return this.http
+    //   .post<PolicyTypesResponse>(CLAIM_API_ENDPOINTS.policyTypes, payload)
+    //   .pipe(catchError(this.handleHttpError('load policy types')));
+    return of(
+      CLAIM_MASTER_DATA.find((item) => item.countryCode === payload.policyCountry)?.policyTypes ??
+        [],
+    ).pipe(delay(500));
   }
 
   getClaimTypes(payload: GetClaimTypesRequest): Observable<ClaimTypesResponse> {
-    return this.http
-      .post<ClaimTypesResponse>(CLAIM_API_ENDPOINTS.claimTypes, payload)
-      .pipe(catchError(this.handleHttpError('load claim types')));
+    // return this.http
+    //   .post<ClaimTypesResponse>(CLAIM_API_ENDPOINTS.claimTypes, payload)
+    //   .pipe(catchError(this.handleHttpError('load claim types')));
+    return of(
+      CLAIM_MASTER_DATA.find(
+        (item) => item.countryCode === payload.policyCountry,
+      )?.policyTypes?.find((type) => type.policyTypeCode === payload.policyType)?.claimTypes ?? [],
+    ).pipe(delay(500));
   }
 
   saveInitialClaimDetails(
